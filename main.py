@@ -1,33 +1,29 @@
-from fastapi import FastAPI, status, Depends
-import classes, model
+from fastapi import FastAPI
+import model
 from database import engine, get_db
-from sqlalchemy.orm import Session
-import requests
-from bs4 import BeautifulSoup
+from fastapi.middleware.cors import CORSMiddleware
 
 model.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"Hello":"World!"}
+origins = [
+    'http://localhost:5173'
+]
 
-@app.post("/criar", status_code=status.HTTP_201_CREATED)
-def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(get_db)):
-    # mensagem_criada = model.Model_Mensagem(titulo=nova_mensagem.tutulo,conteudo=nova_mensagem.conteudo, publicada=nova_mensagem.publicada)
-    mensagem_criada = model.Model_Mensagem(**nova_mensagem.model_dump())
-    db.add(mensagem_criada)
-    db.commit()
-    db.refresh(mensagem_criada)
-    return{"Mensagem:": mensagem_criada}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 
-    # print(nova_mensagem)
-    # return {"Mensagem": f"Titulo: {nova_mensagem.titulo} Conteudo: {nova_mensagem.conteudo} Publicada: {nova_mensagem.publicada}"}
+# Incluindo as rotas da pasta routes_n_functions
+app.include_router(upload_router)
+app.include_router(category_router)
+app.include_router(truncade_router)
 
-@app.get("/quadrado/{num}")
-def square(num: int):
-    return num ** 3
 
 # uvicorn app.main:app --reload --root-path server
 
