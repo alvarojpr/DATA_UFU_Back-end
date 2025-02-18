@@ -5,7 +5,7 @@ from typing import Optional
 class UsuarioBase(BaseModel):  # UsuarioBase herda BaseModel
     matricula: str
     nome: str
-    email: str
+    email: EmailStr
 
 
 class UsuarioCreate(UsuarioBase):  # UsuarioCreate herda UsuarioBase
@@ -23,7 +23,7 @@ class UsuarioUpdate(BaseModel):
 
 
 class UsuarioResponse(UsuarioBase):  # UsuarioResponse herda UsuarioBase
-    id: int
+    matricula: str
 
     # converte objetos ORM (database) diretamente para o schema Pydantic
     class Config:

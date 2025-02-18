@@ -9,6 +9,7 @@ from app.routes.usuario import usuario_router
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
+# criando as tabelas
 disciplina.Base.metadata.create_all(bind=engine)
 edital.Base.metadata.create_all(bind=engine)
 feedback.Base.metadata.create_all(bind=engine)
@@ -29,7 +30,7 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-# Incluindo as rotas da pasta routes_n_functions
+# Incluindo as rotas da pasta app/routes
 app.include_router(autenticacao_router)
 app.include_router(disciplinas_router)
 app.include_router(feedback_router)
