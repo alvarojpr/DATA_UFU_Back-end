@@ -9,8 +9,8 @@ def obter_horarios_050():
     return
 
 
-# mostrar os horarios do intercampi
-@transporte_router.get("/transporte/intercampi")
+
+@transporte_router.get("/transporte/intercampi") # mostrar os horarios do intercampi
 def obter_horarios_intercampi():
 
     return

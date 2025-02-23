@@ -9,15 +9,15 @@ def listar_disciplinas():
     return
 
 
-# Matricular-se em disciplina
-@disciplinas_router.post("/disciplina/matricular")
+
+@disciplinas_router.post("/disciplina/matricular") # Matricular-se em disciplina
 def matricular_em_disciplinas():
 
     return
 
 
-# Remover disciplina da matrícula
-@disciplinas_router.delete("/disciplina/remover")
+
+@disciplinas_router.delete("/disciplina/remover") # Remover disciplina da matrícula
 def remover_disciplinas():
 
     return
