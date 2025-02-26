@@ -1,1 +1,1 @@
-Defina os modelos Pydantic para entrada e saída de dados nas requisições. Eles servem para validação e serialização de dados.
+Define os modelos Pydantic para entrada e saída de dados nas requisições. Eles servem para validação e serialização de dados.

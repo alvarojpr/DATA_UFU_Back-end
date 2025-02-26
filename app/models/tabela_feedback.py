@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from sqlalchemy.sql import text
 from sqlalchemy.orm import relationship
 from database import Base
-from .usuario import Model_Aluno  # Importando o modelo correto
+from .tabela_usuario import Model_Aluno  # Importando o modelo correto
 
 
 class Model_Feedback(Base):

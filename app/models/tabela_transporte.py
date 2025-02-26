@@ -6,7 +6,7 @@ from database import Base
 class Model_Transporte(Base):
     __tablename__ = 'transporte'
     id = Column(Integer, primary_key=True, nullable=False)
-    nome = Column(String, nullable=False)
+    nome = Column(String, nullable=False) # intercampi ou municipal
 
     # Relacionamento: Um transporte pode ter vários pontos
     pontos = relationship("Model_Pontos", back_populates="transporte")

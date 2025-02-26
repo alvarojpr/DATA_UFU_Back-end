@@ -23,6 +23,13 @@ class TransporteResponse(TransporteBase):
         orm_mode = True  # Permite que o Pydantic converta objetos ORM diretamente
 
 
+class TransporteUpdate(TransporteBase):
+    nome: Optional[str] = None
+    sala: Optional[str] = None
+    nome_prof: Optional[str] = None
+    periodo: Optional[int] = None
+
+
 # 4. Modelo Base para Ponto
 class PontoBase(BaseModel):
     ponto: str

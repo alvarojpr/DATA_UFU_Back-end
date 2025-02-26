@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models.usuario import Model_Aluno
-from schemas.usuario import UsuarioCreate, UsuarioUpdate
+from app.models.tabela_usuario import Model_Aluno
+from app.schemas.schema_usuario import UsuarioCreate, UsuarioUpdate
 import bcrypt
 
 def get_usuario(db: Session, matricula: str):

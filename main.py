@@ -1,20 +1,20 @@
 from fastapi import FastAPI
-from app.models import disciplina, edital, feedback, transporte, usuario
-from app.routes.autenticacao import autenticacao_router
-from app.routes.disciplinas import disciplinas_router
-from app.routes.feedback import feedback_router
-from app.routes.grade import grade_router
-from app.routes.transporte import transporte_router
-from app.routes.usuario import usuario_router
+from app.models import tabela_disciplina, tabela_editais, tabela_feedback, tabela_transporte, tabela_usuario
+from app.routes.rota_autenticacao import autenticacao_router
+from app.routes.rota_disciplinas import disciplina_router
+from app.routes.rota_feedback import feedback_router
+from app.routes.rota_grade import grade_router
+from app.routes.rota_transporte import transporte_router
+from app.routes.rota_usuario import usuario_router
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
-# criando as tabelas
-disciplina.Base.metadata.create_all(bind=engine)
-edital.Base.metadata.create_all(bind=engine)
-feedback.Base.metadata.create_all(bind=engine)
-transporte.Base.metadata.create_all(bind=engine)
-usuario.Base.metadata.create_all(bind=engine)
+# criando/abrindo as tabelas
+tabela_disciplina.Base.metadata.create_all(bind=engine)
+tabela_editais.Base.metadata.create_all(bind=engine)
+tabela_feedback.Base.metadata.create_all(bind=engine)
+tabela_transporte.Base.metadata.create_all(bind=engine)
+tabela_usuario.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -32,7 +32,7 @@ app.add_middleware(
 
 # Incluindo as rotas da pasta app/routes
 app.include_router(autenticacao_router)
-app.include_router(disciplinas_router)
+app.include_router(disciplina_router)
 app.include_router(feedback_router)
 app.include_router(grade_router)
 app.include_router(transporte_router)

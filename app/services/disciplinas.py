@@ -1,1 +1,0 @@
-# O diretório /services geralmente contém a lógica de negócio da aplicação, separando-a dos modelos (/models) e das rotas (/routes).
