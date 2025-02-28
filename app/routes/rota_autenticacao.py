@@ -10,8 +10,14 @@ def login():
 
 
 @autenticacao_router.post("/auth/logout")  # deslogar
-def lgout():
+def logout():
 
+    return
+
+
+@autenticacao_router.get("/auth/me")
+def return_data():
+    
     return
 
 
