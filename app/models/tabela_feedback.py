@@ -17,14 +17,3 @@ class Model_Feedback(Base):
     # Relacionamento com Model_Aluno
     # Corrigido para 'Model_Aluno'
     aluno = relationship("Model_Aluno", back_populates="feedbacks")
-
-
-class Model_Aluno(Base):
-    __tablename__ = 'aluno'
-
-    matricula = Column(String, primary_key=True, nullable=False)
-    nome = Column(String, nullable=False)
-
-    # Relacionamento de volta para feedbacks
-    # Relacionamento de volta
-    feedbacks = relationship("Model_Feedback", back_populates="aluno")

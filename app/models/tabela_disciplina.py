@@ -5,15 +5,19 @@ from database import Base
 
 class Model_Disciplina(Base):
     __tablename__ = 'disciplina'
-    # Corrigido para 'cod_disciplina'
+
     cod_disciplina = Column(String, primary_key=True, nullable=False)
     nome = Column(String, nullable=False)
     sala = Column(String, nullable=False)
     nome_prof = Column(String, nullable=False)
     periodo = Column(Integer, nullable=False)
 
-    # Relacionamento
+    # Relacionamento com a tabela de associação (aluno_disciplina)
+    alunos = relationship("Model_AlunoDisciplina", back_populates="disciplina")
+
+    # Relacionamento com dias da semana (se necessário)
     dias_semana = relationship("Dias_da_Semana", back_populates="disciplina")
+    
 
 
 class Dias_da_Semana(Base):
