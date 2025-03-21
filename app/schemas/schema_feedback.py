@@ -34,4 +34,4 @@ class FeedbackResponse(FeedbackBase):
     data: date
 
     class Config:
-        orm_mode = True  # Permite que o Pydantic converta objetos ORM diretamente
+        from_attributes = True  # Permite que o Pydantic converta objetos ORM diretamente

@@ -28,3 +28,7 @@ class UsuarioResponse(UsuarioBase):  # UsuarioResponse herda UsuarioBase
     # converte objetos ORM (database) diretamente para o schema Pydantic
     class Config:
         from_attributes = True
+
+class LoginRequest(BaseModel):
+    matricula: str
+    senha: str

@@ -13,12 +13,12 @@ disciplina_router = APIRouter()
 #############################################################################################################
 # DISCIPLINAS
 # o aluno não cria nem atualiza disciplinas. essas rotas é para os desenvolvedores popularem o database.
-@disciplina_router.post("/disciplinas/", response_model=DisciplinaResponse)
+@disciplina_router.post("/disciplinas/criar", response_model=DisciplinaResponse)
 def criar_disciplina(disciplina: DisciplinaCreate, db: Session = Depends(get_db)):
     
     return
 
-@disciplina_router.put("/disciplinas/{cod_disciplina}", response_model=DisciplinaResponse)
+@disciplina_router.put("/disciplinas/atualizar/{cod_disciplina}", response_model=DisciplinaResponse)
 def atualizar_disciplina(cod_disciplina: str, disciplina: DisciplinaUpdate, db: Session = Depends(get_db)):
     disciplina_existente = db.query(Model_Disciplina).filter_by(cod_disciplina=cod_disciplina).first()
     
@@ -32,7 +32,7 @@ def atualizar_disciplina(cod_disciplina: str, disciplina: DisciplinaUpdate, db: 
     return disciplina_existente
 
 
-@disciplina_router.delete("/disciplinas/{cod_disciplina}")
+@disciplina_router.delete("/disciplinas/excluir/{cod_disciplina}")
 def excluir_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
     disciplina = db.query(Model_Disciplina).filter_by(cod_disciplina=cod_disciplina).first()
     db.delete(disciplina)
@@ -50,7 +50,7 @@ def excluir_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
 
 #############################################################################################################
 # RELACIONAMENTO |ALUNO|~~~~|DISCIPLINA|
-@disciplina_router.post("/disciplinas/{cod_disciplina}")
+@disciplina_router.post("/disciplinas/add/{cod_disciplina}")
 def adicionar_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
     disciplina = db.query(tabela_AlunoDisciplina).filter_by(cod_disciplina=cod_disciplina).first()
     if not disciplina:
@@ -59,7 +59,7 @@ def adicionar_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
     return {"msg": "Disciplina adicionada"}
 
 # Remover disciplina do aluno
-@disciplina_router.delete("/disciplinas/{cod_disciplina}")
+@disciplina_router.delete("/disciplinas/remover/{cod_disciplina}")
 def remover_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
     disciplina = db.query(tabela_AlunoDisciplina).filter_by(cod_disciplina=cod_disciplina).first()
     if not disciplina:
@@ -68,7 +68,7 @@ def remover_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
     return {"msg": "Disciplina removida"}
 
 # Consultar disciplina
-@disciplina_router.get("/disciplinas/{cod_disciplina}", response_model=DisciplinaResponse)
+@disciplina_router.get("/disciplinas/consultar/{cod_disciplina}", response_model=DisciplinaResponse)
 def consultar_disciplina(cod_disciplina: str, db: Session = Depends(get_db)):
     disciplina = db.query(tabela_AlunoDisciplina).filter_by(cod_disciplina=cod_disciplina).first()
     if not disciplina:

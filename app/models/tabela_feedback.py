@@ -8,12 +8,9 @@ class Model_Feedback(Base):
     __tablename__ = 'feedback'
 
     id = Column(Integer, primary_key=True, nullable=False)
-    data = Column(Date, nullable=False, default=text(
-        "CURRENT_DATE"))  # Define a data automaticamente
-    matricula_aluno = Column(String, ForeignKey(
-        'aluno.matricula'), nullable=False)
+    data = Column(Date, nullable=False, default="CURRENT_DATE")
+    matricula_aluno = Column(String, ForeignKey('aluno.matricula'), nullable=False)
     texto = Column(String, nullable=False)
 
     # Relacionamento com Model_Aluno
-    # Corrigido para 'Model_Aluno'
     aluno = relationship("Model_Aluno", back_populates="feedbacks")

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from app.models.tabela_usuario import Model_Aluno
-from app.schemas.schema_usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse
+from app.schemas.schema_usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse, LoginRequest
 import bcrypt
 from fastapi.security import OAuth2PasswordBearer
 import jwt
@@ -39,31 +39,45 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     if db.query(Model_Aluno).filter_by(matricula=usuario.matricula).first():
         raise HTTPException(status_code=400, detail="Matrícula já cadastrada")
     
-    hashed_senha = bcrypt.hashpw(usuario.senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') 
+    # Gera o hash da senha
+    hashed_senha = bcrypt.hashpw(usuario.senha.encode('utf-8'), bcrypt.gensalt())
+    
+    # Decodifica o hash para uma string antes de armazenar
+    hashed_senha_str = hashed_senha.decode('utf-8')
+    
+    # Cria o usuário
     novo_usuario = Model_Aluno(
         matricula=usuario.matricula,
         nome=usuario.nome,
         email=usuario.email,
-        senha=hashed_senha
+        senha=hashed_senha_str  # Armazena o hash como string
     )
+    
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
     return novo_usuario
 
+
 # Rota de login (gera o token)
 @usuario_router.post("/usuario/login")
-def login(matricula: str, senha: str, db: Session = Depends(get_db)):
-    usuario = db.query(Model_Aluno).filter_by(matricula=matricula).first()
-    if not usuario or not bcrypt.checkpw(senha.encode('utf-8'), usuario.senha.encode('utf-8')):
+def login(login_request: LoginRequest, db: Session = Depends(get_db)):
+    usuario = db.query(Model_Aluno).filter_by(matricula=login_request.matricula).first()
+    if not usuario or not bcrypt.checkpw(login_request.senha.encode('utf-8'), usuario.senha.encode('utf-8')):
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     
     # Criação do token JWT
     access_token = create_access_token(data={"sub": usuario.matricula})
     return {"access_token": access_token, "token_type": "bearer"}
 
+
+
+
+
+
+
 # Rota para atualizar o perfil do usuário
-@usuario_router.put("/usuario/{matricula}", response_model=UsuarioResponse)
+@usuario_router.put("/usuario/update/{matricula}", response_model=UsuarioResponse)
 def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depends(get_db), token: str = Depends(verify_token)):
     usuario_db = db.query(Model_Aluno).filter_by(matricula=matricula).first()
     if not usuario_db:
@@ -81,7 +95,7 @@ def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depen
     return usuario_db
 
 # Rota para excluir a conta do usuário
-@usuario_router.delete("/usuario/{matricula}")
+@usuario_router.delete("/usuario/deletar/{matricula}")
 def excluir_usuario(matricula: str, db: Session = Depends(get_db), token: str = Depends(verify_token)):
     usuario = db.query(Model_Aluno).filter_by(matricula=matricula).first()
     if not usuario:
