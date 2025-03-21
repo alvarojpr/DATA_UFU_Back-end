@@ -53,3 +53,9 @@ class DiasDaSemanaResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class GradeResponse(BaseModel):
+    nome: str
+    dia: str
+    horario: time

@@ -20,3 +20,4 @@ class Model_Aluno(Base):
     def check_password(self, senha):
         # Verificar a senha
         return bcrypt.checkpw(senha.encode('utf-8'), self.senha.encode('utf-8'))
+    

@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from app.models import tabela_disciplina, tabela_editais, tabela_feedback, tabela_transporte, tabela_usuario
-from app.routes.rota_autenticacao import autenticacao_router
-from app.routes.rota_disciplinas import disciplina_router
+from app.routes.rota_disciplinas_e_grade import disciplina_router
 from app.routes.rota_feedback import feedback_router
-from app.routes.rota_grade import grade_router
 from app.routes.rota_transporte import transporte_router
 from app.routes.rota_usuario import usuario_router
 from database import engine
@@ -31,10 +29,8 @@ app.add_middleware(
 )
 
 # Incluindo as rotas da pasta app/routes
-app.include_router(autenticacao_router)
 app.include_router(disciplina_router)
 app.include_router(feedback_router)
-app.include_router(grade_router)
 app.include_router(transporte_router)
 app.include_router(usuario_router)
 
