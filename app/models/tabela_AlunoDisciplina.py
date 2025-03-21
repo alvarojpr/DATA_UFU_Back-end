@@ -8,4 +8,4 @@ class Model_AlunoDisciplina(Base):
     cod_disciplina = Column(String, ForeignKey('disciplina.cod_disciplina'), primary_key=True)
 
     aluno = relationship("Model_Aluno", back_populates="disciplinas")
-    disciplina = relationship("Model_Disciplina", back_populates="alunos")
+    disciplina = relationship("Model_Disciplina", back_populates="aluno")
