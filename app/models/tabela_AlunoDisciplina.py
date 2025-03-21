@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 
 class Model_AlunoDisciplina(Base):
-    __tablename__ = 'aluno'
+    __tablename__ = 'relacionamento_aluno_disciplina'
     matricula = Column(String, ForeignKey('aluno.matricula'), primary_key=True)
     cod_disciplina = Column(String, ForeignKey('disciplina.cod_disciplina'), primary_key=True)
 
