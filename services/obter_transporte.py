@@ -2,9 +2,14 @@ from sqlalchemy.orm import Session
 from app.models.tabela_transporte import Model_Transporte
 
 def obter_horarios(db: Session, tipo: str):
+
+
     transporte = db.query(Model_Transporte).filter_by(nome=tipo).first()
     if not transporte:
         return {"detail": "Tipo de transporte não encontrado"}
+
+    if tipo.lower() == "intercampi":
+        return obter_horarios_intercampi()
     
     horarios_e_pontos = []
     for ponto in transporte.pontos:
