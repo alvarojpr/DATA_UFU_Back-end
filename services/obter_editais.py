@@ -101,7 +101,7 @@ def salvar_editais_no_bd(db: Session):
                 titulo=edital['titulo'],
                 tipo=edital['tipo'],
                 data=edital['data_publicacao'],
-                num_edital=int(edital['numero_edital']) if edital['numero_edital'].isdigit() else 0
+                num_edital=edital['numero_edital']
             )
             db.add(novo_edital)
     

@@ -8,4 +8,4 @@ class Model_Edital(Base):
     titulo = Column(String, nullable=False)
     data = Column(String, nullable=False)
     tipo = Column(String, nullable=False)
-    num_edital = Column(Integer, nullable=False)
+    num_edital = Column(String, nullable=False)

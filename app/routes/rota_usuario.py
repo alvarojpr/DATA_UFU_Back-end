@@ -44,7 +44,8 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     
     # Decodifica o hash para uma string antes de armazenar
     hashed_senha_str = hashed_senha.decode('utf-8')
-    
+   # print("senha criada",hashed_senha_str)
+   # print("senha criada_normal",hashed_senha)
     # Cria o usuário
     novo_usuario = Model_Aluno(
         matricula=usuario.matricula,
@@ -52,7 +53,8 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
         email=usuario.email,
         senha=hashed_senha_str  # Armazena o hash como string
     )
-    
+   # print("senha antes de salvar no banco:", novo_usuario.senha)
+
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
@@ -63,14 +65,19 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
 @usuario_router.post("/usuario/login")
 def login(login_request: LoginRequest, db: Session = Depends(get_db)):
     usuario = db.query(Model_Aluno).filter_by(matricula=login_request.matricula).first()
-    if not usuario or not bcrypt.checkpw(login_request.senha.encode('utf-8'), usuario.senha.encode('utf-8')):
+
+    if not usuario:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
-    
+
+    # Verifica a senha digitada com o hash salvo no banco
+    if not bcrypt.checkpw(login_request.senha.encode('utf-8'), usuario.senha.encode('utf-8')):
+        print("Senha digitada:", login_request.senha.encode('utf-8'))
+        print("Hash salvo:", usuario.senha.encode('utf-8'))
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
     # Criação do token JWT
     access_token = create_access_token(data={"sub": usuario.matricula})
     return {"access_token": access_token, "token_type": "bearer"}
-
-
 
 
 

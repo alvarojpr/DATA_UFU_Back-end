@@ -41,10 +41,10 @@ class Model_Aluno(Base):
     # Relacionamento com Edital
     # editais = relationship("Model_Edital", secondary=aluno_edital, back_populates="alunos")
 
-    @validates('senha')
-    def hash_password(self, key, senha):
-        hashed = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
-        return hashed.decode('utf-8')
+    # @validates('senha')
+    # def hash_password(self, key, senha):
+    #     hashed = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
+    #     return hashed.decode('utf-8')
 
     def check_password(self, senha):
         return bcrypt.checkpw(senha.encode('utf-8'), self.senha.encode('utf-8'))
