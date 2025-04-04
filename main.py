@@ -4,6 +4,7 @@ from app.routes.rota_disciplinas_e_grade import disciplina_router
 from app.routes.rota_feedback import feedback_router
 from app.routes.rota_transporte import transporte_router
 from app.routes.rota_usuario import usuario_router
+from app.routes.rota_editais import router_editais
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -33,7 +34,7 @@ app.include_router(disciplina_router)
 app.include_router(feedback_router)
 app.include_router(transporte_router)
 app.include_router(usuario_router)
-
+app.include_router(router_editais)
 
 # uvicorn app.main:app --reload --root-path server
 # uvicorn main:app --reload

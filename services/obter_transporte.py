@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.tabela_transporte import Model_Transporte
 
+
 def obter_horarios(db: Session, tipo: str):
 
 
@@ -8,8 +9,8 @@ def obter_horarios(db: Session, tipo: str):
     if not transporte:
         return {"detail": "Tipo de transporte não encontrado"}
 
-    if tipo.lower() == "intercampi":
-        return obter_horarios_intercampi()
+    #if tipo.lower() == "intercampi":
+       # return obter_transporte_Intercampi(bd,tipo)
     
     horarios_e_pontos = []
     for ponto in transporte.pontos:

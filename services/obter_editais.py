@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import json
 from datetime import date
+from sqlalchemy.orm import Session
+from app.models.tabela_editais import Model_Edital
 
 def editais_ufu():
 
@@ -87,5 +89,37 @@ def editais_ufu():
     return editais_data
 
 
-if __name__ == '__main__':
-    print("data_ufu")
+def salvar_editais_no_bd(db: Session):
+    editais = editais_ufu()
+
+    for edital in editais:
+        existente = db.query(Model_Edital).filter_by(link=edital['link']).first()
+        if not existente:
+            novo_edital = Model_Edital(
+                link=edital['link'],
+                orgao_responsavel=edital['orgao_responsavel'],
+                titulo=edital['titulo'],
+                tipo=edital['tipo'],
+                data=edital['data_publicacao'],
+                num_edital=int(edital['numero_edital']) if edital['numero_edital'].isdigit() else 0
+            )
+            db.add(novo_edital)
+    
+    db.commit()
+
+def obter_editais_com_cache(db: Session):
+    edital_existe = db.query(Model_Edital).first()
+    if not edital_existe:
+        salvar_editais_no_bd(db)
+
+    editais = db.query(Model_Edital).all()
+    return [
+        {
+            "link": edital.link,
+            "orgao_responsavel": edital.orgao_responsavel,
+            "titulo": edital.titulo,
+            "tipo": edital.tipo,
+            "data": edital.data,
+            "num_edital": edital.num_edital
+        } for edital in editais
+    ]
