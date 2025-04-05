@@ -1,6 +1,7 @@
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import validates, relationship
 from database import Base
+
 import bcrypt
 
 
@@ -31,7 +32,7 @@ class Model_Aluno(Base):
     senha = Column(String, nullable=False)
     nome = Column(String, nullable=False)
     email = Column(String, nullable=False)
-
+    periodo = Column(Integer, nullable=True)
     # Relacionamento com a tabela de associação (aluno_disciplina)
     disciplinas = relationship("Model_AlunoDisciplina", back_populates="aluno")
 

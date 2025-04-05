@@ -44,8 +44,7 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     
     # Decodifica o hash para uma string antes de armazenar
     hashed_senha_str = hashed_senha.decode('utf-8')
-   # print("senha criada",hashed_senha_str)
-   # print("senha criada_normal",hashed_senha)
+ 
     # Cria o usuário
     novo_usuario = Model_Aluno(
         matricula=usuario.matricula,
@@ -76,8 +75,19 @@ def login(login_request: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
     # Criação do token JWT
+    #access_token = create_access_token(data={"sub": usuario.matricula})
+    #return {"access_token": access_token, "token_type": "bearer"}
     access_token = create_access_token(data={"sub": usuario.matricula})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "usuario": {
+            "matricula": usuario.matricula,
+            "nome": usuario.nome,
+            "email": usuario.email,
+            "periodo":usuario.periodo
+        }
+    }
 
 
 
@@ -94,6 +104,8 @@ def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depen
         usuario_db.nome = usuario.nome
     if usuario.email:
         usuario_db.email = usuario.email
+    if usuario.periodo:
+        usuario_db.periodo = usuario.periodo
     if usuario.senha:
         usuario_db.senha = bcrypt.hashpw(usuario.senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
