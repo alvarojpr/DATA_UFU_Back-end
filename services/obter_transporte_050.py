@@ -5,33 +5,26 @@ from sqlalchemy.orm import Session
 from database import get_db
 from app.models.tabela_transporte import Model_Transporte, Model_Pontos, Model_Horarios
 
-import requests
-from bs4 import BeautifulSoup
+def obter_horarios_municipal():
+    url = 'https://www.montecarmelo.mg.gov.br/transporte-publico'
+    response = requests.get(url)
+    html = response.text
 
-def obter_horarios_intercampi():
-    urls = [
-        ('https://proae.ufu.br/intercampi?field_campus_origem_tid=511&field_campus_destino_tid=510', 'Boa Vista → Araras'),
-        ('https://proae.ufu.br/intercampi?field_campus_origem_tid=510&field_campus_destino_tid=511', 'Araras → Boa Vista')
-    ]
+    soup = BeautifulSoup(html, 'html.parser')
+    titulos = soup.find_all('div', class_='linha50')
 
     pontos_dict = {}
-
-    for url, rota in urls:
-        res = requests.get(url)
-        soup = BeautifulSoup(res.content, 'html.parser')
-        divs = soup.find_all('div', class_='col-xs-12 col-sm-12 col-md-6 col-lg-6')
-
-        horarios = []
-        for div in divs:
-            hora_div = div.find('div', class_='field-name-field-hora-saida')
-            if hora_div:
-                for span in hora_div.find_all('span', class_='date-display-single'):
-                    hora = span.text.strip()
-                    horarios.append(hora)
-
-        if rota not in pontos_dict:
-            pontos_dict[rota] = []
-        pontos_dict[rota].extend(horarios)
+    for titulo in titulos:
+        linhas = titulo.text.strip().splitlines()
+        for linha in linhas:
+            linha = linha.strip()
+            if '»' in linha:
+                horario, parada = linha.split(' » ', 1)
+                parada = parada.strip()
+                horario = horario.strip()
+                if parada not in pontos_dict:
+                    pontos_dict[parada] = []
+                pontos_dict[parada].append(horario)
 
     pontos_e_horarios = []
     for parada, horarios in pontos_dict.items():
@@ -41,17 +34,16 @@ def obter_horarios_intercampi():
         })
 
     return {
-        "transporte": "intercampi",
+        "transporte": "municipal",
         "Pontos_e_horarios": pontos_e_horarios
     }
 
+def salvar_horarios_municipal_no_bd(db: Session):
+    dados = obter_horarios_municipal()
 
-def salvar_horarios_intercampi_no_bd(db: Session):
-    dados = obter_horarios_intercampi()
-
-    transporte = db.query(Model_Transporte).filter_by(nome="intercampi").first()
+    transporte = db.query(Model_Transporte).filter_by(nome="municipal").first()
     if not transporte:
-        transporte = Model_Transporte(nome="intercampi")
+        transporte = Model_Transporte(nome="municipal")
         db.add(transporte)
         db.commit()
         db.refresh(transporte)
@@ -72,7 +64,7 @@ def salvar_horarios_intercampi_no_bd(db: Session):
 
     db.commit()
 
-def obter_transporte_Intercampi(db: Session, tipo: str):
+def obter_transporte_municipal(db: Session, tipo: str):
     transporte = db.query(Model_Transporte).filter_by(nome=tipo).first()
     if not transporte:
         return {"detail": "Tipo de transporte não encontrado"}
@@ -92,7 +84,7 @@ def obter_transporte_Intercampi(db: Session, tipo: str):
 
 # 🔄 Esta função executa o ciclo completo: verifica, popula, retorna
 def preview_intercampi_com_cache(db: Session = Depends(get_db)):
-    transporte = db.query(Model_Transporte).filter_by(nome="intercampi").first()
+    transporte = db.query(Model_Transporte).filter_by(nome="municipal").first()
     if not transporte:
-        salvar_horarios_intercampi_no_bd(db)
-    return obter_transporte_Intercampi(db, "intercampi")
+        salvar_horarios_municipal_no_bd(db)
+    return obter_transporte_municipal(db, "municipal")
