@@ -64,7 +64,7 @@ def salvar_horarios_municipal_no_bd(db: Session):
 
     db.commit()
 
-def obter_transporte_municipal(db: Session, tipo: str):
+def obter_transporte_050(db: Session, tipo: str):
     transporte = db.query(Model_Transporte).filter_by(nome=tipo).first()
     if not transporte:
         return {"detail": "Tipo de transporte não encontrado"}
@@ -83,8 +83,8 @@ def obter_transporte_municipal(db: Session, tipo: str):
     }
 
 # 🔄 Esta função executa o ciclo completo: verifica, popula, retorna
-def preview_intercampi_com_cache(db: Session = Depends(get_db)):
+def preview_050_com_cache(db: Session = Depends(get_db)):
     transporte = db.query(Model_Transporte).filter_by(nome="municipal").first()
     if not transporte:
         salvar_horarios_municipal_no_bd(db)
-    return obter_transporte_municipal(db, "municipal")
+    return obter_transporte_050(db, "municipal")

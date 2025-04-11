@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, status
 from app.models import tabela_disciplina, tabela_editais, tabela_feedback, tabela_transporte, tabela_usuario
 from app.routes.rota_disciplinas_e_grade import disciplina_router
 from app.routes.rota_feedback import feedback_router
@@ -7,7 +7,8 @@ from app.routes.rota_usuario import usuario_router
 from app.routes.rota_editais import router_editais
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-
+from app import models
+from database import get_db
 # criando/abrindo as tabelas
 tabela_disciplina.Base.metadata.create_all(bind=engine)
 tabela_editais.Base.metadata.create_all(bind=engine)
@@ -21,13 +22,6 @@ origins = [
     'http://localhost:5173'
 ]
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=['*'],
-#     allow_headers=['*']
-# )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # para teste, mas depois use domínios específicos
@@ -42,6 +36,29 @@ app.include_router(feedback_router)
 app.include_router(transporte_router)
 app.include_router(usuario_router)
 app.include_router(router_editais)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # uvicorn app.main:app --reload --root-path server
 # uvicorn main:app --reload
