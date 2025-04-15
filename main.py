@@ -16,6 +16,7 @@ tabela_feedback.Base.metadata.create_all(bind=engine)
 tabela_transporte.Base.metadata.create_all(bind=engine)
 tabela_usuario.Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI()
 
 origins = [
@@ -36,7 +37,6 @@ app.include_router(feedback_router)
 app.include_router(transporte_router)
 app.include_router(usuario_router)
 app.include_router(router_editais)
-
 
 
 

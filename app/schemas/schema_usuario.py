@@ -18,7 +18,7 @@ class UsuarioUpdate(BaseModel):
     nome: Optional[str] = None
     email: Optional[EmailStr] = None
     senha: Optional[str] = None
-    periodo: Optional[int] = None
+    periodo: Optional[int] = 1
 
 # define como os dados do usuário serão retornados.
 
@@ -27,7 +27,7 @@ class UsuarioResponse(UsuarioBase):  # UsuarioResponse herda UsuarioBase
     matricula: str
     nome: str
     email: str
-    periodo: int
+    periodo: Optional[int] = 1
     # converte objetos ORM (database) diretamente para o schema Pydantic
     class Config:
         from_attributes = True
