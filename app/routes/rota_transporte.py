@@ -19,6 +19,6 @@ def preview_050(db: Session = Depends(get_db)):
 def obter_horarios_intercampi(db: Session = Depends(get_db)):
     return preview_intercampi_com_cache(db)
 
-@transporte_router.get("/transporte/intercam´pi/preview")
+@transporte_router.get("/transporte/intercampi/preview")
 def preview_intercampi(db: Session = Depends(get_db)):
     return preview_intercampi_com_cache(db)

@@ -7,6 +7,9 @@ import bcrypt
 from fastapi.security import OAuth2PasswordBearer
 import jwt
 from datetime import datetime, timedelta
+import random
+import string
+
 
 # Token de autenticação
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="usuario/login")
@@ -123,3 +126,84 @@ def excluir_usuario(matricula: str, db: Session = Depends(get_db), token: str = 
     db.delete(usuario)
     db.commit()
     return {"detail": "Usuário excluído com sucesso"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+# Função para enviar o e-mail com a nova senha
+def enviar_email(email_destino: str, nova_senha: str):
+    remetente = "dataufu@gmail.com"  # Coloca o e-mail de remetente aqui
+    senha_email = "upnsxserrkwsxolr"  # Coloca a senha do e-mail aqui
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    print("A")
+    # Cria a mensagem
+    mensagem = MIMEMultipart()
+    mensagem["From"] = remetente
+    mensagem["To"] = email_destino
+    mensagem["Subject"] = "Recuperação de Senha"
+    corpo_email = f"Sua nova senha é: {nova_senha}. Por favor, altere-a após o login."
+    mensagem.attach(MIMEText(corpo_email, "plain"))
+    print("B")
+    # Envia o e-mail
+    try:
+        with smtplib.SMTP(smtp_server, smtp_port) as servidor:
+            servidor.starttls()
+            servidor.login(remetente, senha_email)
+            servidor.sendmail(remetente, email_destino, mensagem.as_string())
+            print("C")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao enviar o e-mail: {str(e)}")
+
+@usuario_router.post("/usuario/recuperar")
+def recuperar_senha(matricula: str, db: Session = Depends(get_db)):
+    usuario = db.query(Model_Aluno).filter_by(matricula=matricula).first()
+    print(matricula)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    print(f"depois")
+    nova_senha = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+    hashed_nova_senha = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    print("salame")
+    usuario.senha = hashed_nova_senha
+    db.commit()
+    db.refresh(usuario)
+    print("aasadas")
+    # Envia o e-mail com a nova senha
+    enviar_email(usuario.email, nova_senha)
+    print("xereka")
+    return {"detail": "Senha redefinida com sucesso. Verifique seu e-mail para a nova senha."}
+
