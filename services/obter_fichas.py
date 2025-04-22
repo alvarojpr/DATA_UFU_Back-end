@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from app.models.tabela_fichas import Model_Fichas
 
+
 def obter_fichas():
     prefixos = ['GSI', 'FAMAT', 'FACOM', 'IEUFU', 'LIBRAS']
     disciplinas_por_periodo = {1: 5, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6, 7: 4, 8: 2}
