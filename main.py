@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, status
-from app.models import tabela_disciplina, tabela_editais, tabela_feedback, tabela_transporte, tabela_usuario
+from app.models import tabela_disciplina, tabela_editais, tabela_feedback, tabela_fichas, tabela_transporte, tabela_usuario
 from app.routes.rota_disciplinas_e_grade import disciplina_router
 from app.routes.rota_feedback import feedback_router
 from app.routes.rota_transporte import transporte_router
 from app.routes.rota_usuario import usuario_router
 from app.routes.rota_editais import router_editais
+from app.routes.rota_fichas import router_fichas
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from app import models
@@ -15,6 +16,7 @@ tabela_editais.Base.metadata.create_all(bind=engine)
 tabela_feedback.Base.metadata.create_all(bind=engine)
 tabela_transporte.Base.metadata.create_all(bind=engine)
 tabela_usuario.Base.metadata.create_all(bind=engine)
+tabela_fichas.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
@@ -37,7 +39,7 @@ app.include_router(feedback_router)
 app.include_router(transporte_router)
 app.include_router(usuario_router)
 app.include_router(router_editais)
-
+app.include_router(router_fichas)
 
 
 

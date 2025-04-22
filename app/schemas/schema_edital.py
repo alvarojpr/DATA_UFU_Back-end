@@ -8,7 +8,7 @@ class EditalBase(BaseModel):
     titulo: str
     data: str
     tipo: str
-    num_edital: int
+    num_edital: str
 
 # 2. Para criação de um Edital, inclui o link (que é o campo chave primária)
 class EditalCreate(EditalBase):
@@ -20,7 +20,7 @@ class EditalUpdate(BaseModel):
     titulo: Optional[str] = None
     data: Optional[str] = None
     tipo: Optional[str] = None
-    num_edital: Optional[int] = None
+    num_edital: Optional[str] = None
 
 # 4. Para a resposta do Edital, incluindo o link como campo de retorno
 class EditalResponse(EditalBase):
