@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import json
 from datetime import date
 from sqlalchemy.orm import Session
 from app.models.tabela_editais import Model_Edital
