@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 import random
 import string
 
-
 # Token de autenticação
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="usuario/login")
 
@@ -63,6 +62,7 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     return novo_usuario
 
 
+
 # Rota de login (gera o token)
 @usuario_router.post("/usuario/login")
 def login(login_request: LoginRequest, db: Session = Depends(get_db)):
@@ -94,8 +94,6 @@ def login(login_request: LoginRequest, db: Session = Depends(get_db)):
 
 
 
-
-
 # Rota para atualizar o perfil do usuário
 @usuario_router.put("/usuario/update/{matricula}", response_model=UsuarioResponse)
 def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depends(get_db), token: str = Depends(verify_token)):
@@ -116,6 +114,8 @@ def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depen
     db.refresh(usuario_db)
     return usuario_db
 
+
+
 # Rota para excluir a conta do usuário
 @usuario_router.delete("/usuario/deletar/{matricula}")
 def excluir_usuario(matricula: str, db: Session = Depends(get_db), token: str = Depends(verify_token)):
@@ -127,37 +127,7 @@ def excluir_usuario(matricula: str, db: Session = Depends(get_db), token: str = 
     db.commit()
     return {"detail": "Usuário excluído com sucesso"}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+###################################### RECUPERAÇÃO DE SENHA #############################################
 
 import smtplib
 from email.mime.text import MIMEText
