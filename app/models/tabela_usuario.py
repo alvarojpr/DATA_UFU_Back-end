@@ -32,7 +32,6 @@ class Model_Aluno(Base):
     senha = Column(String, nullable=False)
     nome = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    periodo = Column(Integer, nullable=True)
     # Relacionamento com a tabela de associação (aluno_disciplina)
     disciplinas = relationship("Model_AlunoDisciplina", back_populates="aluno")
 

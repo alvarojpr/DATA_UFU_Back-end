@@ -88,7 +88,6 @@ def login(login_request: LoginRequest, db: Session = Depends(get_db)):
             "matricula": usuario.matricula,
             "nome": usuario.nome,
             "email": usuario.email,
-            "periodo":usuario.periodo
         }
     }
 
@@ -105,8 +104,6 @@ def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depen
         usuario_db.nome = usuario.nome
     if usuario.email:
         usuario_db.email = usuario.email
-    if usuario.periodo:
-        usuario_db.periodo = usuario.periodo
     if usuario.senha:
         usuario_db.senha = bcrypt.hashpw(usuario.senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
