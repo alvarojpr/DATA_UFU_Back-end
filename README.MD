@@ -66,18 +66,21 @@ Redoc: http://localhost:8000/redoc
 
 Estrutura do projeto:
 back_end_pdsi2/
+├── app/                     # Módulo principal da aplicação
+│   ├── models/              # Modelos ORM (tabelas do banco de dados)
+│   ├── schemas/             # Schemas do Pydantic (validação de dados)
+│   ├── routes/              # Rotas/Endpoints da API
+│   ├── services/            # Regras de negócio e lógica da aplicação
 │
-├── app/
-│   ├── models/           # Modelos do banco (ORM)
-│   ├── schemas/          # Schemas do Pydantic
-│   ├── routes/           # Rotas da API
-│   ├── services/         # Regras de negócio
-│   ├── database.py       # Conexão e inicialização do banco
-│   └── main.py           # Inicialização da API FastAPI
-│
-├── .env.example          # Exemplo de variáveis de ambiente
-├── requirements.txt      # Dependências
-└── README.md             # Este arquivo
+├── venv/                    # Ambiente virtual com dependências Python
+├── .env                     # Variáveis de ambiente (não versionado)
+├── .gitignore               # Arquivos/pastas ignoradas pelo Git
+├── database.py              # Configuração e conexão com o banco de dados
+├── main.py                  # Arquivo principal da aplicação FastAPI
+├── requirements.txt         # Lista de dependências do projeto
+├── teste.py                 # Script de testes manuais para rotas
+└── README.md                # Documentação do projeto
+
 
 SOBRE:
 Projeto acadêmico desenvolvido pelos alunos da Universidade Federal de Uberlândia (UFU) Álvaro José, Edilson Filho, Eduardo Alvim, Gabriel Gama e Waldemar Flores para a disciplina de PDSI. Tem como objetivo centralizar informações relevantes para os estudantes do curso de Sistemas de Informação.

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from services.obter_fichas import obter_fichas_com_cache
+from app.services.obter_fichas import obter_fichas_com_cache
 
 router_fichas = APIRouter()
 

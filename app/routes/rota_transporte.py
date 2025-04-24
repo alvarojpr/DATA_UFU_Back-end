@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from services.obter_transporte_050 import preview_050_com_cache
-from services.obter_transporte_Intercampi import preview_intercampi_com_cache
+from app.services.obter_transporte_050 import preview_050_com_cache
+from app.services.obter_transporte_Intercampi import preview_intercampi_com_cache
 
 
 transporte_router = APIRouter()

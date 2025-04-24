@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from services.obter_editais import obter_editais_com_cache
+from app.services.obter_editais import obter_editais_com_cache
+
 
 router_editais = APIRouter()
 

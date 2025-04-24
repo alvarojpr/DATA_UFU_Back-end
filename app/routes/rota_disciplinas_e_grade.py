@@ -7,7 +7,8 @@ from app.schemas.schema_disciplina import DisciplinaCreate, DisciplinaUpdate, Di
 from app.models import tabela_AlunoDisciplina
 from app.models.tabela_disciplina import Model_Disciplina
 from typing import List
-from services.obter_disciplinas import salvar_disciplinas_no_bd
+# from services.obter_disciplinas import salvar_disciplinas_no_bd
+from app.services.obter_disciplinas import salvar_disciplinas_no_bd
 
 disciplina_router = APIRouter()
 
