@@ -19,7 +19,6 @@ from app import models
 from database import get_db
 
 import threading
-import asyncio
 import time
 import schedule
 from datetime import datetime
