@@ -82,9 +82,9 @@ def salvar_horarios_no_bd(db: Session, tipo: str):
     elif tipo == "municipal":
         dados = obter_horarios_municipal()
 
-    transporte = db.query(Model_Transporte).filter_by(nome="municipal").first()
+    transporte = db.query(Model_Transporte).filter_by(nome=tipo).first()
     if not transporte:
-        transporte = Model_Transporte(nome="municipal")
+        transporte = Model_Transporte(nome=tipo)
         db.add(transporte)
         db.commit()
         db.refresh(transporte)
