@@ -109,6 +109,7 @@ def obter_transporte(db: Session, tipo: str):
     if not transporte:
         return {"detail": "Tipo de transporte não encontrado"}
 
+    print(transporte.nome)
     resultado = []
     for ponto in transporte.pontos:
         horarios = [h.horario for h in ponto.horarios]
