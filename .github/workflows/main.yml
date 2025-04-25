@@ -32,9 +32,17 @@ jobs:
 
       - name: Instalar dependências
         run: pip install -r requirements.txt
-      
+
+      - name: Instalar cliente PostgreSQL
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
       - name: Esperando o PostgreSQL ficar pronto
-        run: sleep 15
+        run: |
+          for i in {1..10}; do
+            pg_isready -h localhost -p 5432 -U ${{ secrets.POSTGRES_USER }} && break
+            echo "Esperando banco de dados ficar pronto..."
+            sleep 5
+          done
 
       - name: Executar pytest
         env:
