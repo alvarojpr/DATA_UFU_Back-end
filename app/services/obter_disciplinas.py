@@ -86,8 +86,8 @@ def extrair_dados_horarios(tables):
     return horarios_extraidos
 
 
-def salvar_disciplinas_no_bd(db: Session, pdf_path: str):
-    pdf_path = r"services/resources/horarios.pdf"
+def salvar_disciplinas_no_bd(db: Session):
+    pdf_path = r"app/services/resources/horarios.pdf"
     dados_extraidos = []
 
     with pdfplumber.open(pdf_path) as pdf:
