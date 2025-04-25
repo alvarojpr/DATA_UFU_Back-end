@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 from app.models.tabela_fichas import Model_Fichas
 
 
@@ -48,9 +47,6 @@ def obter_fichas():
             dados.append([periodo, codigo, disciplina, link_completo])
             contador += 1
     return dados
-# df = pd.DataFrame(obter_fichas(), columns=['Período', 'Código', 'Disciplina', 'Link'])
-# print(df)
-# print(obter_fichas())
 
 def salvar_fichas_no_bd(db: requests.Session):
     fichas = obter_fichas()
@@ -70,11 +66,7 @@ def salvar_fichas_no_bd(db: requests.Session):
     db.commit()
 
 
-def obter_fichas_com_cache(db: requests.Session):
-    ficha_existe = db.query(Model_Fichas).first()
-    if not ficha_existe:
-        salvar_fichas_no_bd(db)
-
+def obter_fichas_do_bd(db: requests.Session):
     fichas = db.query(Model_Fichas).all()
     return [
         {

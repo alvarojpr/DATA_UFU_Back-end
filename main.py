@@ -54,7 +54,7 @@ app.include_router(router_fichas)
 
 def atualiza_bd():
     db = next(get_db())
-    print("##############################################################################################")
+    print("#"*120)
     print(f"Executando atualização do banco de dados em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     salvar_editais_no_bd(db)
     print("Editais Atualizados")
@@ -66,7 +66,7 @@ def atualiza_bd():
     print("Horarios Municipal Atualizados")
     salvar_horarios_no_bd(db, "intercampi")
     print("Horarios Intercampi Atualizados")
-    print("##############################################################################################")
+    print("#"*120)
     
     print("Banco de dados atualizado.")
 
@@ -82,10 +82,7 @@ def start_scheduler():
     schedule.every().friday.at(horario_agendado).do(lambda: threading.Thread(target=atualiza_bd).start())
     thread = threading.Thread(target=rodar_agendamentos, daemon=True)
     thread.start()
-
-
-
-
+    print(f"Scheduler iniciado. Próxima execução Sexta-Feira {horario_agendado}")
 
 #####  BRANCHES  #####
 

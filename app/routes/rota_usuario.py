@@ -23,7 +23,6 @@ load_dotenv(dotenv_path) # carrega as variáveis de ambiente
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-#print(SECRET_KEY,"\n",ALGORITHM,"\n",ACCESS_TOKEN_EXPIRE_MINUTES,"\n")
 
 # Função para criar o token JWT
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
@@ -60,7 +59,6 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
         email=usuario.email,
         senha=hashed_senha_str  # Armazena o hash como string
     )
-   # print("senha antes de salvar no banco:", novo_usuario.senha)
 
     db.add(novo_usuario)
     db.commit()
@@ -84,8 +82,6 @@ def login(login_request: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
     # Criação do token JWT
-    #access_token = create_access_token(data={"sub": usuario.matricula})
-    #return {"access_token": access_token, "token_type": "bearer"}
     access_token = create_access_token(data={"sub": usuario.matricula})
     return {
         "access_token": access_token,

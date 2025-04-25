@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from fastapi import Depends
 from sqlalchemy.orm import Session
-from database import get_db
 from app.models.tabela_transporte import Model_Transporte, Model_Pontos, Model_Horarios
 
 def obter_horarios_intercampi():
