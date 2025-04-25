@@ -10,7 +10,7 @@ from app.routes.rota_fichas import router_fichas
 from app.services.obter_disciplinas import salvar_disciplinas_no_bd
 from app.services.obter_editais import salvar_editais_no_bd
 from app.services.obter_fichas import salvar_fichas_no_bd
-from app.services.obter_transportes import salvar_horarios_municipal_no_bd,salvar_horarios_intercampi_no_bd
+from app.services.obter_transportes import salvar_horarios_no_bd
 
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
@@ -62,9 +62,9 @@ def atualiza_bd():
     print("Disciplinas Atualizadas")
     salvar_fichas_no_bd(db)
     print("Fichas Atualizadas")
-    salvar_horarios_municipal_no_bd(db)
+    salvar_horarios_no_bd(db, "municipal")
     print("Horarios Municipal Atualizados")
-    salvar_horarios_intercampi_no_bd(db)
+    salvar_horarios_no_bd(db, "intercampi")
     print("Horarios Intercampi Atualizados")
     print("##############################################################################################")
     

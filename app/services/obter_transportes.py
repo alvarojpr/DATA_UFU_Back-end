@@ -75,8 +75,12 @@ def obter_horarios_municipal():
         "Pontos_e_horarios": pontos_e_horarios
     }
 
-def salvar_horarios_municipal_no_bd(db: Session):
-    dados = obter_horarios_municipal()
+
+def salvar_horarios_no_bd(db: Session, tipo: str):
+    if tipo == "intercampi":
+        dados = obter_horarios_intercampi()
+    elif tipo == "municipal":
+        dados = obter_horarios_municipal()
 
     transporte = db.query(Model_Transporte).filter_by(nome="municipal").first()
     if not transporte:
@@ -100,32 +104,6 @@ def salvar_horarios_municipal_no_bd(db: Session):
                 db.add(novo_horario)
 
     db.commit()
-
-def salvar_horarios_intercampi_no_bd(db: Session):
-    dados = obter_horarios_intercampi()
-
-    transporte = db.query(Model_Transporte).filter_by(nome="intercampi").first()
-    if not transporte:
-        transporte = Model_Transporte(nome="intercampi")
-        db.add(transporte)
-        db.commit()
-        db.refresh(transporte)
-
-    for ponto_data in dados["Pontos_e_horarios"]:
-        ponto = db.query(Model_Pontos).filter_by(ponto=ponto_data["ponto"], transporte_id=transporte.id).first()
-        if not ponto:
-            ponto = Model_Pontos(ponto=ponto_data["ponto"], transporte_id=transporte.id)
-            db.add(ponto)
-            db.commit()
-            db.refresh(ponto)
-
-        for horario in ponto_data["horarios"]:
-            horario_existente = db.query(Model_Horarios).filter_by(horario=horario, ponto_id=ponto.id).first()
-            if not horario_existente:
-                novo_horario = Model_Horarios(horario=horario, ponto_id=ponto.id)
-                db.add(novo_horario)
-
-    db.commit()    
 
 
 def obter_transporte(db: Session, tipo: str):
