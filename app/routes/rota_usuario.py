@@ -111,7 +111,7 @@ def atualizar_perfil(matricula: str, usuario: UsuarioUpdate, db: Session = Depen
     db.refresh(usuario_db)
     return usuario_db
 
-
+#botão "sair" nao funciona.
 
 # Rota para excluir a conta do usuário
 @usuario_router.delete("/usuario/deletar/{matricula}")
@@ -132,6 +132,7 @@ from email.mime.multipart import MIMEMultipart
 
 # Função para enviar o e-mail com a nova senha
 def enviar_email(email_destino: str, nova_senha: str):
+    #lembrar de colocar no .env
     remetente = "dataufu@gmail.com"  # Coloca o e-mail de remetente aqui
     senha_email = "upnsxserrkwsxolr"  # Coloca a senha do e-mail aqui
     smtp_server = "smtp.gmail.com"
@@ -161,16 +162,12 @@ def recuperar_senha(matricula: str, db: Session = Depends(get_db)):
     print(matricula)
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
-    print(f"depois")
     nova_senha = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
     hashed_nova_senha = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    print("salame")
     usuario.senha = hashed_nova_senha
     db.commit()
     db.refresh(usuario)
-    print("aasadas")
     # Envia o e-mail com a nova senha
     enviar_email(usuario.email, nova_senha)
-    print("xereka")
     return {"detail": "Senha redefinida com sucesso. Verifique seu e-mail para a nova senha."}
 
