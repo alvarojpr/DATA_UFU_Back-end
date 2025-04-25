@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from app.models.tabela_editais import Model_Edital
 
 def editais_ufu():
-
     # Obtém o ano atual para comparar com a data dos editais e transforma em String
     data_atual = date.today()
     ano_atual = '{}'.format(data_atual.year)
@@ -103,22 +102,21 @@ def salvar_editais_no_bd(db: Session):
                 num_edital=edital['numero_edital']
             )
             db.add(novo_edital)
-    
     db.commit()
 
-def obter_editais_com_cache(db: Session):
-    edital_existe = db.query(Model_Edital).first()
-    if not edital_existe:
-        salvar_editais_no_bd(db)
+# def obter_editais_com_cache(db: Session):
+#     edital_existe = db.query(Model_Edital).first()
+#     if not edital_existe:
+#         salvar_editais_no_bd(db)
 
-    editais = db.query(Model_Edital).all()
-    return [
-        {
-            "link": edital.link,
-            "orgao_responsavel": edital.orgao_responsavel,
-            "titulo": edital.titulo,
-            "tipo": edital.tipo,
-            "data": edital.data,
-            "num_edital": edital.num_edital
-        } for edital in editais
-    ]
+#     editais = db.query(Model_Edital).all()
+#     return [
+#         {
+#             "link": edital.link,
+#             "orgao_responsavel": edital.orgao_responsavel,
+#             "titulo": edital.titulo,
+#             "tipo": edital.tipo,
+#             "data": edital.data,
+#             "num_edital": edital.num_edital
+#         } for edital in editais
+#     ]

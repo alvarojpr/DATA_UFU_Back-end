@@ -26,6 +26,11 @@ def popular_banco_com_pdf(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao salvar disciplinas: {str(e)}")
     
+
+
+
+
+    
 # DISCIPLINAS
 # o aluno não cria nem atualiza disciplinas. essas rotas é para os desenvolvedores popularem o database.
 @disciplina_router.post("/disciplinas/criar", response_model=DisciplinaResponse)
@@ -111,10 +116,7 @@ def consultar_disciplina(nome_disciplina: str, db: Session = Depends(get_db)):
 #Retorna a grade horária do aluno autenticado.
 @disciplina_router.get("/disciplinas/grade", response_model=List[GradeResponse])
 def get_grade(db: Session = Depends(get_db)):
-    grade = (
-        db.query(Model_Disciplina.nome, Model_Disciplina.dia_semana, Model_Disciplina.horario)
-        .all()
-    )
+    grade = (db.query(Model_Disciplina.nome, Model_Disciplina.dia_semana, Model_Disciplina.horario).all())
     
     if not grade:
         raise HTTPException(status_code=404, detail="Nenhuma disciplina encontrada na grade")
