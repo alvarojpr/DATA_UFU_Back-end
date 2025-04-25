@@ -84,6 +84,9 @@ def start_scheduler():
     thread.start()
     print(f"Scheduler iniciado. Próxima execução Sexta-Feira {horario_agendado}")
 
+
+
+
 #####  BRANCHES  #####
 
 # criar branch:

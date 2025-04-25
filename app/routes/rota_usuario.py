@@ -6,7 +6,7 @@ from app.schemas.schema_usuario import UsuarioCreate, UsuarioUpdate, UsuarioResp
 import bcrypt
 from fastapi.security import OAuth2PasswordBearer
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 import string
 from dotenv import load_dotenv
@@ -27,7 +27,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 # Função para criar o token JWT
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
     to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta # datetime.datetime.now(datetime.UTC)
+    expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt

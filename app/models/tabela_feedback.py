@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, func
-from sqlalchemy.sql import text
 from sqlalchemy.orm import relationship
 from database import Base
-
 
 class Model_Feedback(Base):
     __tablename__ = 'feedback'

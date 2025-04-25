@@ -1,6 +1,6 @@
 # schemas definem e validam os dados que a api recebe.
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional
 from datetime import time
 
 # 1. Definindo o modelo base para Disciplina
