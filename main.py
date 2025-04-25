@@ -56,7 +56,7 @@ app.include_router(router_editais)
 app.include_router(router_fichas)
 
 
-async def atualiza_bd():
+def atualiza_bd():
     db = next(get_db())
     print(f"Executando atualização do banco de dados em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     if (salvar_editais_no_bd(db)):
@@ -69,23 +69,16 @@ async def atualiza_bd():
         print("Horarios Intercampi Atualizados")
     print("Banco de dados atualizado.")
 
-def executa_atualizacao():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(atualiza_bd())
-
-
-threading.Thread(target=executa_atualizacao).start()
-horario_agendado = "05:00"
-schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
-
 def rodar_agendamentos():
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(30)
 
 @app.on_event("startup")
 def start_scheduler():
+    horario_agendado = "05:00"
+    atualiza_bd()
+    schedule.every().friday.at(horario_agendado).do(lambda: threading.Thread(target=atualiza_bd).start())
     thread = threading.Thread(target=rodar_agendamentos, daemon=True)
     thread.start()
 
