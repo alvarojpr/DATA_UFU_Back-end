@@ -10,8 +10,7 @@ from app.routes.rota_fichas import router_fichas
 from app.services.obter_disciplinas import salvar_disciplinas_no_bd
 from app.services.obter_editais import salvar_editais_no_bd
 from app.services.obter_fichas import salvar_fichas_no_bd
-from app.services.obter_transporte_050 import preview_050_com_cache
-from app.services.obter_transporte_Intercampi import preview_intercampi_com_cache
+from app.services.obter_transportes import salvar_horarios_municipal_no_bd,salvar_horarios_intercampi_no_bd
 
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
@@ -55,15 +54,20 @@ app.include_router(router_fichas)
 
 def atualiza_bd():
     db = next(get_db())
+    print("##############################################################################################")
     print(f"Executando atualização do banco de dados em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    if (salvar_editais_no_bd(db)):
-        print("Editais Atualizados")
-    if salvar_disciplinas_no_bd(db):
-        print("Disciplinas Atualizadas")
-    if salvar_fichas_no_bd(db):
-        print("Fichas Atualizadas")
-    if preview_intercampi_com_cache(db):
-        print("Horarios Intercampi Atualizados")
+    salvar_editais_no_bd(db)
+    print("Editais Atualizados")
+    salvar_disciplinas_no_bd(db)
+    print("Disciplinas Atualizadas")
+    salvar_fichas_no_bd(db)
+    print("Fichas Atualizadas")
+    salvar_horarios_municipal_no_bd(db)
+    print("Horarios Municipal Atualizados")
+    salvar_horarios_intercampi_no_bd(db)
+    print("Horarios Intercampi Atualizados")
+    print("##############################################################################################")
+    
     print("Banco de dados atualizado.")
 
 def rodar_agendamentos():

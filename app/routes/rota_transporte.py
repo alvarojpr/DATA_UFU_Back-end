@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from app.services.obter_transporte_050 import preview_050_com_cache
-from app.services.obter_transporte_Intercampi import preview_intercampi_com_cache
+from app.services.obter_transportes import obter_transporte
 
 
 transporte_router = APIRouter()
 
 @transporte_router.get("/transporte/publico")
 def obter_horarios_050(db: Session = Depends(get_db)):
-    return preview_050_com_cache(db)
+    return obter_transporte(db, "municipal")
 
 
 @transporte_router.get("/transporte/intercampi")
 def obter_horarios_intercampi(db: Session = Depends(get_db)):
-    return preview_intercampi_com_cache(db)
+    return obter_transporte(db, "intercampi")
+

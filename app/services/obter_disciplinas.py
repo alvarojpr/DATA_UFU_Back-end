@@ -2,7 +2,7 @@ import re
 import pdfplumber
 from sqlalchemy.orm import Session
 from app.models.tabela_disciplina import Model_Disciplina 
-
+import logging
 
 def is_valid_time(horario):
     return re.match(r"\d{2}h\d{2}-\d{2}h\d{2}", horario) is not None
@@ -116,4 +116,5 @@ def salvar_disciplinas_no_bd(db: Session):
             db.add(nova_disciplina)
 
     db.commit()
-    print("Disciplinas salvas no banco de dados com sucesso.")
+
+logging.getLogger("pdfminer").setLevel(logging.ERROR)

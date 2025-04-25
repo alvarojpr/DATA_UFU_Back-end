@@ -23,7 +23,7 @@ load_dotenv(dotenv_path) # carrega as variáveis de ambiente
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-print(SECRET_KEY,"\n",ALGORITHM,"\n",ACCESS_TOKEN_EXPIRE_MINUTES,"\n")
+#print(SECRET_KEY,"\n",ALGORITHM,"\n",ACCESS_TOKEN_EXPIRE_MINUTES,"\n")
 
 # Função para criar o token JWT
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
