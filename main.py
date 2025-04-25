@@ -6,10 +6,24 @@ from app.routes.rota_transporte import transporte_router
 from app.routes.rota_usuario import usuario_router
 from app.routes.rota_editais import router_editais
 from app.routes.rota_fichas import router_fichas
+
+from app.services.obter_disciplinas import salvar_disciplinas_no_bd
+from app.services.obter_editais import salvar_editais_no_bd
+from app.services.obter_fichas import salvar_fichas_no_bd
+from app.services.obter_transporte_050 import preview_050_com_cache
+from app.services.obter_transporte_Intercampi import preview_intercampi_com_cache
+
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from app import models
 from database import get_db
+
+import threading
+import asyncio
+import time
+import schedule
+from datetime import datetime
+
 # criando/abrindo as tabelas
 tabela_disciplina.Base.metadata.create_all(bind=engine)
 tabela_editais.Base.metadata.create_all(bind=engine)
@@ -42,9 +56,38 @@ app.include_router(router_editais)
 app.include_router(router_fichas)
 
 
+async def atualiza_bd():
+    db = next(get_db())
+    print(f"Executando atualização do banco de dados em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    if (salvar_editais_no_bd(db)):
+        print("Editais Atualizados")
+    if salvar_disciplinas_no_bd(db):
+        print("Disciplinas Atualizadas")
+    if salvar_fichas_no_bd(db):
+        print("Fichas Atualizadas")
+    if preview_intercampi_com_cache(db):
+        print("Horarios Intercampi Atualizados")
+    print("Banco de dados atualizado.")
+
+def executa_atualizacao():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(atualiza_bd())
 
 
+threading.Thread(target=executa_atualizacao).start()
+horario_agendado = "05:00"
+schedule.every().monday.at(horario_agendado).do(lambda: threading.Thread(target=executa_atualizacao).start())
 
+def rodar_agendamentos():
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
+@app.on_event("startup")
+def start_scheduler():
+    thread = threading.Thread(target=rodar_agendamentos, daemon=True)
+    thread.start()
 
 
 
