@@ -29,4 +29,6 @@ jobs:
       run: echo "PYTHONPATH=$PWD/app" >> $GITHUB_ENV
 
     - name: Rodar testes com pytest
-      run: pytest teste.py
+      run: |
+        export $(cat .env | xargs)
+        pytest teste.py
