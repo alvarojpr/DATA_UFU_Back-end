@@ -61,7 +61,7 @@ def test_rotas_disciplinas_salvar(mock_preview):
 
 
 ########### TESTES DE EDITAIS ##########
-# salvar no bd
+# salvar editais no bd
 @patch("app.services.obter_editais.salvar_editais_no_bd")
 def test_rotas_editais_salvar(mock_preview):
     with patch("app.routes.rota_editais.get_db") as mock_get_db:
@@ -73,8 +73,6 @@ def test_rotas_editais_salvar(mock_preview):
             assert response.status_code == 200
         else: # mock_db.query.return_value.first.return_value = True # banco de dados está cheio
             assert response.status_code == 405
-
-    
 #########################################################################################################
 
 
