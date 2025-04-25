@@ -11,14 +11,7 @@ transporte_router = APIRouter()
 def obter_horarios_050(db: Session = Depends(get_db)):
     return preview_050_com_cache(db)
 
-@transporte_router.get("/transporte/publico/preview")
-def preview_050(db: Session = Depends(get_db)):
-    return preview_050_com_cache(db)
 
 @transporte_router.get("/transporte/intercampi")
 def obter_horarios_intercampi(db: Session = Depends(get_db)):
-    return preview_intercampi_com_cache(db)
-
-@transporte_router.get("/transporte/intercampi/preview")
-def preview_intercampi(db: Session = Depends(get_db)):
     return preview_intercampi_com_cache(db)

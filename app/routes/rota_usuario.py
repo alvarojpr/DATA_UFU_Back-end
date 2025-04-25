@@ -9,15 +9,20 @@ import jwt
 from datetime import datetime, timedelta
 import random
 import string
+from dotenv import load_dotenv
+import os
 
 # Token de autenticação
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="usuario/login")
 
 usuario_router = APIRouter()
 
-SECRET_KEY = "mysecretkey"  # Altere isso para algo mais seguro
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # O tempo que o token será válido
+dotenv_path = os.path.join(os.path.dirname(__file__), '...env') # caminho para o arquivo .env: 
+load_dotenv(dotenv_path) # carrega as variáveis de ambiente
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 # Função para criar o token JWT
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
@@ -133,11 +138,10 @@ from email.mime.multipart import MIMEMultipart
 # Função para enviar o e-mail com a nova senha
 def enviar_email(email_destino: str, nova_senha: str):
     #lembrar de colocar no .env
-    remetente = "dataufu@gmail.com"  # Coloca o e-mail de remetente aqui
-    senha_email = "upnsxserrkwsxolr"  # Coloca a senha do e-mail aqui
-    smtp_server = "smtp.gmail.com"
-    smtp_port = 587
-    print("A")
+    remetente = os.getenv("remetente")
+    senha_email = os.getenv("senha_email")
+    smtp_server = os.getenv("smtp_server")
+    smtp_port = os.getenv("smtp_port")
     # Cria a mensagem
     mensagem = MIMEMultipart()
     mensagem["From"] = remetente
@@ -145,14 +149,12 @@ def enviar_email(email_destino: str, nova_senha: str):
     mensagem["Subject"] = "Recuperação de Senha"
     corpo_email = f"Sua nova senha é: {nova_senha}. Por favor, altere-a após o login."
     mensagem.attach(MIMEText(corpo_email, "plain"))
-    print("B")
     # Envia o e-mail
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as servidor:
             servidor.starttls()
             servidor.login(remetente, senha_email)
             servidor.sendmail(remetente, email_destino, mensagem.as_string())
-            print("C")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao enviar o e-mail: {str(e)}")
 
