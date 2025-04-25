@@ -4,7 +4,10 @@ from unittest.mock import patch
 
 client = TestClient(app)
 
-# TESTE DE TRANSPORTE
+# pytest teste.py
+
+########### DE TRANSPORTE ###########
+# intercampi da ufu
 @patch("app.services.obter_transporte_Intercampi.obter_horarios_intercampi")
 def test_transporte_intercampi(mock_preview):
     mock_preview.return_value = {
@@ -18,6 +21,7 @@ def test_transporte_intercampi(mock_preview):
     assert response.status_code == 200
     assert response.json()["transporte"] == "intercampi"
 
+# transporte público municipal
 @patch("app.services.obter_transporte_050.obter_transporte_050")
 def test_transporte_050(mock_preview):
     mock_preview.return_value = {
@@ -34,41 +38,75 @@ def test_transporte_050(mock_preview):
 
 
 
-# #TESTES DE DISCIPLINA
-# @patch("app.services.obter_disciplinas.salvar_disciplinas_no_bd")
-# def test_rotas_disciplinas(mock_preview):
-#     mock_preview.return_value  {
-#         "nome"
-#     }
-#     # 1. Tenta popular o banco com PDF
-#     response = client.post("/disciplinas/popular_bd")
-#     assert response.status_code in [200, 400]  # Pode já estar populado
+########### TESTES DE DISCIPLINAS ##########
+# salvar no bd
+@patch("app.services.obter_disciplinas.salvar_disciplinas_no_bd")
+def test_rotas_disciplinas_salvar(mock_preview):
+    # Simula banco já populado com disciplinas
+    with patch("app.routes.rota_disciplinas_e_grade.get_db") as mock_get_db:
+        mock_db = mock_get_db.return_value
 
-#     # 2. Cria uma nova disciplina
-#     nova_disciplina = {
-#         "nome_disciplina": "Testes Automatizados",
-#         "codigo": "TST123",
-#         "professor": "Dr. Testador",
-#         "horario": "Segunda 10:00-12:00"
-#     }
-#     response = client.post("/disciplinas/criar", json=nova_disciplina)
-#     assert response.status_code == 200
-#     assert response.json()["nome_disciplina"] == "Testes Automatizados"
+        response = client.post("/disciplinas/popular_bd")
 
-#     # 3. Atualiza a disciplina
-#     atualizacao = {
-#         "professor": "Dr. Testador Atualizado",
-#         "horario": "Segunda 14:00-16:00"
-#     }
-#     response = client.put("/disciplinas/atualizar", json=atualizacao)
-#     assert response.status_code == 200
-#     assert response.json()["professor"] == "Dr. Testador Atualizado"
-
-#     # 4. Deleta a disciplina
-#     response = client.delete("/disciplinas/excluir")
-#     assert response.status_code == 200 or response.status_code == 204
-##########################################################################################################
+        if(mock_db.query.return_value.first.return_value is None):
+            assert response.status_code == 200
+            assert response.json()["msg"] == "Disciplinas salvas no banco de dados com sucesso."
+        else: # mock_db.query.return_value.first.return_value = True
+            assert response.status_code == 400
+            assert response.json()["detail"] == "O banco de dados já está populado com disciplinas."
+    
+#########################################################################################################
 
 
 
-# no terminal, pytest teste.py
+
+########### TESTES DE EDITAIS ##########
+# salvar no bd
+@patch("app.services.obter_editais.salvar_editais_no_bd")
+def test_rotas_editais_salvar(mock_preview):
+    with patch("app.routes.rota_editais.get_db") as mock_get_db:
+        mock_db = mock_get_db.return_value
+
+        response = client.post("/editais")
+
+        if(mock_db.query.return_value.first.return_value is None): # banco de dados está vazio
+            assert response.status_code == 200
+        else: # mock_db.query.return_value.first.return_value = True # banco de dados está cheio
+            assert response.status_code == 405
+
+    
+#########################################################################################################
+
+
+
+    
+
+    response = client.get("/transporte/intercampi")
+########### TESTES DE FEEDBACK ##########
+# enviar feedback
+@patch("app.routes.rota_feedback.get_db")  # Mock do banco de dados
+@patch("app.routes.rota_feedback.enviar_feedback")  # Mock da função de envio de feedback
+def test_rotas_feedback(mock_enviar_feedback, mock_get_db):
+    mock_db = mock_get_db.return_value  # Banco mockado
+    # Simula um feedback que o mock deve retornar
+    mock_preview = {
+        "matricula_aluno": "4321",  # Agora matricula_aluno é uma string
+        "texto": "feedback qualquer dado por qualquer um é apenas um teste"
+    }
+
+    # Mock da função enviar_feedback para retornar uma resposta esperada
+    mock_enviar_feedback.return_value = mock_preview  # O que o mock de enviar_feedback retornará
+    
+    # Criação do client para testar a API
+    client = TestClient(app)
+    
+    # Fazendo a requisição POST para o endpoint de feedback
+    response = client.post("/feedback/dar", json=mock_preview)
+    
+    # Verificando se a resposta foi bem-sucedida
+    assert response.status_code == 200
+    assert response.json()["matricula_aluno"] == mock_preview["matricula_aluno"]
+    assert response.json()["texto"] == mock_preview["texto"]
+
+    
+#########################################################################################################

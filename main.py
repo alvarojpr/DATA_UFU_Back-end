@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI
 from app.models import tabela_disciplina, tabela_editais, tabela_feedback, tabela_fichas, tabela_transporte, tabela_usuario
 from app.routes.rota_disciplinas_e_grade import disciplina_router
 from app.routes.rota_feedback import feedback_router
@@ -15,11 +15,9 @@ from app.services.obter_transporte_Intercampi import preview_intercampi_com_cach
 
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-from app import models
 from database import get_db
 
 import threading
-import asyncio
 import time
 import schedule
 from datetime import datetime
@@ -31,7 +29,6 @@ tabela_feedback.Base.metadata.create_all(bind=engine)
 tabela_transporte.Base.metadata.create_all(bind=engine)
 tabela_usuario.Base.metadata.create_all(bind=engine)
 tabela_fichas.Base.metadata.create_all(bind=engine)
-
 
 app = FastAPI()
 
@@ -86,20 +83,36 @@ def start_scheduler():
 
 
 
+#####  BRANCHES  #####
 
+# criar branch:
+# git checkout -b alvaro 
 
+# mudar de branch:
+# git checkout alvaro 
 
+# commitar branch:
+# git add .
+# git commit -m "sua mensagem"
+# git push -u origin alvaro 
 
+# agregar branch na main:
+# git checkout main
+# git pull origin main
 
+# git checkout alvaro 
+# git merge main
 
-
+# deletar branch:
+#  git branch -d alvaro           # LOCAL**
+# git push origin --delete alvaro  # REMOTO**
 
 
 
 
 
 # uvicorn app.main:app --reload --root-path server
-# uvicorn main:app --reload
+# uvicorn main:app --reload # GERALMENTE É ESSE AQUI.
 
 # ATUALIZAR
 # git fetch origin
