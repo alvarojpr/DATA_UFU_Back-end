@@ -7,8 +7,9 @@ class Model_Feedback(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     data = Column(Date, nullable=False, default=func.current_date())
-    matricula_aluno = Column(String, ForeignKey('aluno.matricula'), nullable=False)
+    matricula_aluno = Column(String, ForeignKey('aluno.matricula', ondelete="CASCADE"), nullable=False)
     texto = Column(String, nullable=False)
 
     # Relacionamento com Model_Aluno
-    aluno = relationship("Model_Aluno", back_populates="feedbacks")
+    aluno = relationship("Model_Aluno", back_populates="feedbacks", passive_deletes=True)
+

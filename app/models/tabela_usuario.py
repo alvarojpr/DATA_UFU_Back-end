@@ -14,7 +14,8 @@ class Model_Aluno(Base):
     disciplinas = relationship("Model_AlunoDisciplina", back_populates="aluno")
 
     # Relacionamento com Feedback
-    feedbacks = relationship("Model_Feedback", back_populates="aluno")
+    feedbacks = relationship("Model_Feedback", back_populates="aluno", passive_deletes=True)
+
 
     def check_password(self, senha):
         return bcrypt.checkpw(senha.encode('utf-8'), self.senha.encode('utf-8'))
