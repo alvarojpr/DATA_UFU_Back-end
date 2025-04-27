@@ -100,7 +100,7 @@ def salvar_disciplinas_no_bd(db: Session):
 
     for dado in dados_extraidos:
         existente = db.query(Model_Disciplina).filter_by(
-            nome=dado['disciplina'],
+            nome_disciplina=dado['disciplina'],
             dia_semana=dado['dia'],
             horario=dado['horario']
         ).first()
@@ -108,7 +108,7 @@ def salvar_disciplinas_no_bd(db: Session):
         if not existente:
             nova_disciplina = Model_Disciplina(
                 dia_semana=dado['dia'],
-                nome=dado['disciplina'],
+                nome_disciplina=dado['disciplina'],
                 sala=dado['sala'],
                 nome_prof=dado['professor'],
                 horario=dado['horario']
