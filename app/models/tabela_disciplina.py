@@ -6,7 +6,7 @@ class Model_Disciplina(Base):
     __tablename__ = 'disciplina'
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)  # chave primária nova
-    nome = Column(String, nullable=False)  # agora pode ter nomes repetidos
+    nome_disciplina = Column(String, nullable=False)  # agora pode ter nomes repetidos
     sala = Column(String, nullable=False)
     nome_prof = Column(String, nullable=False)
     dia_semana = Column(String, nullable=False)

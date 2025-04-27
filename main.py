@@ -86,6 +86,31 @@ def start_scheduler():
 
 
 
+#  O CÓDIGO ABAIXO RETORNA TODAS AS ROTAS COM SEUS RESPECTIVOS PARÂMETROS E RETORNOS. FAVOR NÃO DELETAR
+if __name__ == "__main__":
+    from fastapi.routing import APIRoute
+    from fastapi import FastAPI
+    from typing import get_type_hints
+
+    for route in app.routes:
+        if isinstance(route, APIRoute):
+            endpoint = route.endpoint
+            endpoint_name = endpoint.__name__
+
+            # Pegando os parâmetros e seus tipos
+            params = get_type_hints(endpoint)
+
+            # Pegando o tipo de retorno
+            response_model = route.response_model or params.get('return', None)
+
+            print(f"Rota: {route.path}")
+            print(f"  Métodos: {route.methods}")
+            print(f"  Função: {endpoint_name}")
+            print(f"  Parâmetros: {list(params.items())}")
+            print(f"  Retorno: {response_model}\n")
+
+
+
 
 #####  BRANCHES  #####
 

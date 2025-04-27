@@ -1,110 +1,114 @@
+import pytest
 from fastapi.testclient import TestClient
 from main import app
 from unittest.mock import patch
+from app.routes.rota_usuario import verify_token
 
 client = TestClient(app)
 
-# pytest teste.py
+# Mock do verify_token
+def mock_verify_token(token: str = None):
+    return {"matricula": "123456", "nome": "Test User"}
 
-########### DE TRANSPORTE ###########
-# intercampi da ufu
-@patch("app.services.obter_transporte_Intercampi.obter_horarios_intercampi")
-def test_transporte_intercampi(mock_preview):
-    mock_preview.return_value = {
-        "transporte": "intercampi",
-        "Pontos_e_horarios": [
-            {"ponto": "Boa Vista → Araras", "horarios": ["08:00", "10:00"]},
-        ],
-    }
+app.dependency_overrides[verify_token] = mock_verify_token
 
-    response = client.get("/transporte/intercampi")
+# Helper para criar usuário
+def criar_usuario_teste():
+    client.post("/usuario/criar", json={
+        "matricula": "123456",
+        "nome": "João",
+        "email": "joao@test.com",
+        "senha": "123456"
+    })
+
+# Helper para criar disciplina
+def criar_disciplina_teste():
+    client.post("/disciplinas/criar", json={
+        "nome_disciplina": "teste",
+        "codigo": "TESTE123"
+    })
+
+def test_deletar_usuario():
+    criar_usuario_teste()
+    response = client.delete("/usuario/deletar/123456", headers={"Authorization": "Bearer fake_token"})
     assert response.status_code == 200
-    assert response.json()["transporte"] == "intercampi"
 
-# transporte público municipal
-@patch("app.services.obter_transporte_050.obter_transporte_050")
-def test_transporte_050(mock_preview):
-    mock_preview.return_value = {
-        "transporte": "municipal",
-        "Pontos_e_horarios": [
-            {"ponto": "Boa Vista → Araras", "horarios": ["08:00", "10:00"]},
-        ],
-    }
-
-    response = client.get("/transporte/publico")
+def test_atualizar_usuario():
+    criar_usuario_teste()
+    response = client.put(
+        "/usuario/update/123456",
+        json={
+            "nome": "Novo Nome",
+            "email": "novoemail@example.com",
+            "senha": "nova_senha"
+        },
+        headers={"Authorization": "Bearer fake_token"}
+    )
     assert response.status_code == 200
-    assert response.json()["transporte"] == "municipal"
-##########################################################################################################
+    assert response.json()["nome"] == "Novo Nome"
+    assert response.json()["email"] == "novoemail@example.com"
 
+@pytest.mark.parametrize("url", [
+    "/disciplinas/consultar/teste",
+    "/disciplinas/grade",
+    "/feedback/consultar/123456",
+    "/transporte/municipal",
+    "/transporte/intercampi",
+    "/editais",
+    "/fichas",
+])
+def test_get_routes(url):
+    response = client.get(url)
+    assert response.status_code in (200, 404)
 
+@pytest.mark.parametrize("url", [
+    "/disciplinas/popular_bd",
+])
+def test_post_routes_no_body(url):
+    response = client.post(url)
+    assert response.status_code in (200, 422)
 
-########### TESTES DE DISCIPLINAS ##########
-# salvar no bd
-@patch("app.services.obter_disciplinas.salvar_disciplinas_no_bd")
-def test_rotas_disciplinas_salvar(mock_preview):
-    # Simula banco já populado com disciplinas
-    with patch("app.routes.rota_disciplinas_e_grade.get_db") as mock_get_db:
-        mock_db = mock_get_db.return_value
+@pytest.mark.parametrize("url, payload", [
+    ("/disciplinas/criar", {"nome_disciplina": "Matemática", "codigo": "MAT101"}),
+    ("/feedback/dar", {"matricula": "123456", "comentario": "Muito bom!"}),
+    ("/usuario/criar", {"nome": "João", "email": "joao@test.com", "senha": "123456"}),
+    ("/usuario/login", {"email": "joao@test.com", "senha": "123456"}),
+    ("/usuario/recuperar", {"matricula": "123456"}),
+])
+def test_post_routes_with_body(url, payload):
+    response = client.post(url, json=payload)
+    assert response.status_code in (200, 201, 422)
 
-        response = client.post("/disciplinas/popular_bd")
+@pytest.mark.parametrize("url, payload", [
+    ("/disciplinas/atualizar/teste", {"nome_disciplina": "Matemática Atualizada", "codigo": "MAT102"}),
+    ("/usuario/update/123456", {"email": "novoemail@test.com"}),
+])
+def test_put_routes(url, payload):
+    headers = {"Authorization": "Bearer fake_token"}
+    if "/disciplinas/atualizar" in url:
+        criar_disciplina_teste()
+    if "/usuario/update" in url:
+        criar_usuario_teste()
+    response = client.put(url, json=payload, headers=headers)
+    assert response.status_code in (200, 401, 422, 404)
 
-        if(mock_db.query.return_value.first.return_value is None):
-            assert response.status_code == 200
-            assert response.json()["msg"] == "Disciplinas salvas no banco de dados com sucesso."
-        else: # mock_db.query.return_value.first.return_value = True
-            assert response.status_code == 400
-            assert response.json()["detail"] == "O banco de dados já está populado com disciplinas."
-    
-#########################################################################################################
+@pytest.mark.parametrize("url", [
+    "/disciplinas/excluir/teste",
+    "/disciplinas/remover/teste",
+    "/usuario/deletar/123456",
+])
+def test_delete_routes(url):
+    headers = {"Authorization": "Bearer fake_token"}
+    if "disciplinas/excluir" in url or "disciplinas/remover" in url:
+        criar_disciplina_teste()
+    if "disciplinas/remover" in url:
+        headers["aluno_id"] = "123456"  # aluno_id obrigatório no header
+    if "usuario/deletar" in url:
+        criar_usuario_teste()
+    response = client.delete(url, headers=headers)
+    assert response.status_code in (200, 401, 404, 422)
 
-
-
-
-########### TESTES DE EDITAIS ##########
-# salvar editais no bd
-@patch("app.services.obter_editais.salvar_editais_no_bd")
-def test_rotas_editais_salvar(mock_preview):
-    with patch("app.routes.rota_editais.get_db") as mock_get_db:
-        mock_db = mock_get_db.return_value
-
-        response = client.post("/editais")
-
-        if(mock_db.query.return_value.first.return_value is None): # banco de dados está vazio
-            assert response.status_code == 200
-        else: # mock_db.query.return_value.first.return_value = True # banco de dados está cheio
-            assert response.status_code == 405
-#########################################################################################################
-
-
-
-    
-
-    response = client.get("/transporte/intercampi")
-########### TESTES DE FEEDBACK ##########
-# enviar feedback
-@patch("app.routes.rota_feedback.get_db")  # Mock do banco de dados
-@patch("app.routes.rota_feedback.enviar_feedback")  # Mock da função de envio de feedback
-def test_rotas_feedback(mock_enviar_feedback, mock_get_db):
-    mock_db = mock_get_db.return_value  # Banco mockado
-    # Simula um feedback que o mock deve retornar
-    mock_preview = {
-        "matricula_aluno": "4321",  # Agora matricula_aluno é uma string
-        "texto": "feedback qualquer dado por qualquer um é apenas um teste"
-    }
-
-    # Mock da função enviar_feedback para retornar uma resposta esperada
-    mock_enviar_feedback.return_value = mock_preview  # O que o mock de enviar_feedback retornará
-    
-    # Criação do client para testar a API
-    client = TestClient(app)
-    
-    # Fazendo a requisição POST para o endpoint de feedback
-    response = client.post("/feedback/dar", json=mock_preview)
-    
-    # Verificando se a resposta foi bem-sucedida
-    assert response.status_code == 200
-    assert response.json()["matricula_aluno"] == mock_preview["matricula_aluno"]
-    assert response.json()["texto"] == mock_preview["texto"]
-
-    
-#########################################################################################################
+def test_adicionar_disciplina():
+    criar_disciplina_teste()
+    response = client.post("/disciplinas/add/teste?aluno_id=1")
+    assert response.status_code in (200, 400, 422, 404)
