@@ -1,12 +1,13 @@
 # quando o aluno estiver logado, ele pode adicionar e remover disciplinas. Também pode consulta-las.
 
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Header
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Header, Body
 from sqlalchemy.orm import Session
 from database import get_db
 from app.schemas.schema_disciplina import DisciplinaCreate, DisciplinaUpdate, DisciplinaResponse, GradeResponse
 from app.models.tabela_AlunoDisciplina import Model_AlunoDisciplina
 from app.models.tabela_disciplina import Model_Disciplina
 from typing import List
+
 # from services.obter_disciplinas import salvar_disciplinas_no_bd
 from app.services.obter_disciplinas import salvar_disciplinas_no_bd
 
@@ -89,6 +90,7 @@ def obter_disciplinas_por_aluno(matricula: str, db: Session = Depends(get_db)):
         disciplina = db.query(Model_Disciplina).filter_by(id=relacao.disciplina_id).first()
         if disciplina:
             disciplinas.append({
+                "id": disciplina.id,
                 "nome": disciplina.nome_disciplina,
                 "sala": disciplina.sala,
                 "professor": disciplina.nome_prof,
@@ -105,12 +107,12 @@ def obter_disciplinas_por_aluno(matricula: str, db: Session = Depends(get_db)):
 # RELACIONAMENTO |ALUNO|~~~~|DISCIPLINA|
 from pydantic import BaseModel
 
-class AdicionarDisciplinasRequest(BaseModel):
+class DisciplinasRequest(BaseModel):
     aluno_id: str
     disciplinas_ids: List[int]
 
 @disciplina_router.post("/disciplinas/add")
-def adicionar_disciplinas(request: AdicionarDisciplinasRequest, db: Session = Depends(get_db)):
+def adicionar_disciplinas(request: DisciplinasRequest, db: Session = Depends(get_db)):
     for disciplina_id in request.disciplinas_ids:
         disciplina = db.query(Model_Disciplina).filter_by(id=disciplina_id).first()
         if not disciplina:
@@ -159,23 +161,18 @@ def listar_disciplinas(db: Session = Depends(get_db)):
     return list(disciplinas_unicas.values())
 
 
-# Remover disciplina do aluno
-@disciplina_router.delete("/disciplinas/remover/{nome_disciplina}")
-def remover_disciplina(nome_disciplina: str, aluno_id: int = Header(...), db: Session = Depends(get_db)):
-    disciplina = db.query(Model_Disciplina).filter_by(nome_disciplina=nome_disciplina).first()
-    
-    if not disciplina:
-        raise HTTPException(status_code=404, detail="Disciplina não encontrada")
-    
-    relacao = db.query(Model_AlunoDisciplina).filter_by(matricula=aluno_id, disciplina_id=disciplina.id).first()
-
-    if not relacao:
-        raise HTTPException(status_code=404, detail="Relação aluno-disciplina não encontrada")
-
-    db.delete(relacao)
+@disciplina_router.post("/disciplinas/remover")
+def remover_disciplinas(request: DisciplinasRequest, db: Session = Depends(get_db)):
+    for disciplina_id in request.disciplinas_ids:
+        relacao = db.query(Model_AlunoDisciplina).filter_by(
+            matricula=request.aluno_id,
+            disciplina_id=disciplina_id
+        ).first()
+        if relacao:
+            db.delete(relacao)
     db.commit()
+    return {"msg": "Disciplinas removidas com sucesso"}
 
-    return {"msg": "Disciplina removida do aluno"}
 
 # Consultar disciplina
 @disciplina_router.get("/disciplinas/consultar/{nome_disciplina}", response_model=DisciplinaResponse)

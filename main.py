@@ -7,6 +7,8 @@ from app.routes.rota_usuario import usuario_router
 from app.routes.rota_editais import router_editais
 from app.routes.rota_fichas import router_fichas
 
+
+
 from app.services.obter_disciplinas import salvar_disciplinas_no_bd
 from app.services.obter_editais import salvar_editais_no_bd
 from app.services.obter_fichas import salvar_fichas_no_bd
@@ -137,8 +139,8 @@ def start_scheduler():
 # git push origin --delete alvaro  # REMOTO**
 
 
-
-
+#venv/Scripts/activate
+#Abrir o Powershell no modo administrador: Set-ExecutionPolicy Unrestricted
 
 # uvicorn main:app --reload # não usar --reload na apresentação
 
