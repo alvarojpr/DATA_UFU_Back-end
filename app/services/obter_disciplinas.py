@@ -73,12 +73,12 @@ def extrair_dados_horarios(tables):
 
                             if " " in dia_semana:
                                 horarios_extraidos.extend(
-                                    processar_multiplos_dias(dia_semana, horario, nome_disciplina.strip(), professor.strip(), sala.strip())
+                                    processar_multiplos_dias(dia_semana, horario.replace('h', ':'), nome_disciplina.strip(), professor.strip(), sala.strip())
                                 )
                             else:
                                 horarios_extraidos.append({
                                     "dia": dia_semana,
-                                    "horario": horario,
+                                    "horario": horario.replace('h', ':'),
                                     "disciplina": nome_disciplina.strip(),
                                     "professor": professor.strip(),
                                     "sala": sala.strip()

@@ -81,26 +81,82 @@ def excluir_disciplina(nome_disciplina: str, db: Session = Depends(get_db)):
 
 
 
+@disciplina_router.get("/disciplinas/por-aluno/{matricula}")
+def obter_disciplinas_por_aluno(matricula: str, db: Session = Depends(get_db)):
+    relacoes = db.query(Model_AlunoDisciplina).filter_by(matricula=matricula).all()
+    disciplinas = []
+    for relacao in relacoes:
+        disciplina = db.query(Model_Disciplina).filter_by(id=relacao.disciplina_id).first()
+        if disciplina:
+            disciplinas.append({
+                "nome": disciplina.nome_disciplina,
+                "sala": disciplina.sala,
+                "professor": disciplina.nome_prof,
+                "dia_semana": disciplina.dia_semana,
+                "horario": disciplina.horario
+            })
+    return disciplinas
+
+
 
 
 
 #############################################################################################################
 # RELACIONAMENTO |ALUNO|~~~~|DISCIPLINA|
-@disciplina_router.post("/disciplinas/add/{nome_disciplina}")
-def adicionar_disciplina(nome_disciplina: str, aluno_id: int, db: Session = Depends(get_db)):
-    disciplina = db.query(Model_Disciplina).filter_by(nome_disciplina=nome_disciplina).first()
-    if not disciplina:
-        raise HTTPException(status_code=404, detail="Disciplina não encontrada")
+from pydantic import BaseModel
 
-    associacao_existente = db.query(Model_AlunoDisciplina).filter_by(matricula=aluno_id, disciplina_id=disciplina.id).first()
-    if associacao_existente:
-        raise HTTPException(status_code=400, detail="Disciplina já adicionada ao aluno")
+class AdicionarDisciplinasRequest(BaseModel):
+    aluno_id: str
+    disciplinas_ids: List[int]
 
-    nova_associacao = Model_AlunoDisciplina(matricula=aluno_id, disciplina_id=disciplina.id)
-    db.add(nova_associacao)
+@disciplina_router.post("/disciplinas/add")
+def adicionar_disciplinas(request: AdicionarDisciplinasRequest, db: Session = Depends(get_db)):
+    for disciplina_id in request.disciplinas_ids:
+        disciplina = db.query(Model_Disciplina).filter_by(id=disciplina_id).first()
+        if not disciplina:
+            raise HTTPException(status_code=404, detail=f"Disciplina com ID {disciplina_id} não encontrada")
+
+        # Verifica se a associação já existe
+        associacao_existente = db.query(Model_AlunoDisciplina).filter_by(matricula=request.aluno_id, disciplina_id=disciplina.id).first()
+        if associacao_existente:
+            continue  # Se a associação já existe, não faz nada e continua para as próximas disciplinas
+
+        # Cria a nova associação com aluno e disciplina
+        nova_associacao = Model_AlunoDisciplina(matricula=request.aluno_id, disciplina_id=disciplina.id)
+        db.add(nova_associacao)
+
     db.commit()
 
-    return {"msg": "Disciplina adicionada com sucesso"}
+    return {"msg": "Disciplinas adicionadas com sucesso"}
+
+
+
+@disciplina_router.get("/disciplina/obter")
+def listar_disciplinas(db: Session = Depends(get_db)):
+    disciplinas = db.query(Model_Disciplina).all()
+
+    # Usando um set para garantir que não haja duplicação, com base no código e nome da disciplina
+    disciplinas_unicas = {}
+    
+    for disciplina in disciplinas:
+        nome_disciplina = disciplina.nome_disciplina.split('–', 1)[-1].strip() if '–' in disciplina.nome_disciplina else disciplina.nome_disciplina
+        codigo = disciplina.nome_disciplina.split('–', 1)[0].strip() if '–' in disciplina.nome_disciplina else disciplina.nome_disciplina
+
+        # Criando uma chave única com base no código e nome da disciplina
+        chave_unica = (codigo, nome_disciplina)
+        
+        if chave_unica not in disciplinas_unicas:
+            disciplinas_unicas[chave_unica] = {
+                "id": disciplina.id,
+                "nome_disciplina": nome_disciplina,
+                "codigo": codigo,
+                "sala": disciplina.sala,
+                "nome_prof": disciplina.nome_prof,
+                "dia_semana": disciplina.dia_semana,
+                "horario": disciplina.horario
+            }
+
+    return list(disciplinas_unicas.values())
 
 
 # Remover disciplina do aluno

@@ -140,8 +140,7 @@ def start_scheduler():
 
 
 
-# uvicorn app.main:app --reload --root-path server
-# uvicorn main:app --reload # GERALMENTE É ESSE AQUI.
+# uvicorn main:app --reload # não usar --reload na apresentação
 
 # ATUALIZAR
 # git fetch origin
