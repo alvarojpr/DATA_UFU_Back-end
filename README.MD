@@ -11,6 +11,8 @@ A proposta do projeto é integrar e disponibilizar **informações úteis para a
 O projeto possui meios para:
 - Envio de feedbacks
 - Fazer login e autenticação
+- Teste automatizados
+- Esconder credenciais
 - Validação de dados
 - Integração com banco de dados relacional
 
