@@ -25,6 +25,8 @@ O projeto possui meios para:
 - [PostgreSQL](https://www.postgresql.org/) (ou outro banco relacional)
 - [Uvicorn](https://www.uvicorn.org/) como servidor ASGI
 - [Pydantic](https://docs.pydantic.dev/) para validação de dados
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) para web scrapping
+- [PyPDF2](https://pypdf2.readthedocs.io/en/3.x/) para pdf scrapping
 
 ---
 
