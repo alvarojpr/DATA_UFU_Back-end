@@ -22,7 +22,7 @@ O projeto possui meios para:
 
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [SQLAlchemy](https://www.sqlalchemy.org/) para ORM
-- [PostgreSQL](https://www.postgresql.org/) (ou outro banco relacional)
+- [PostgreSQL](https://www.postgresql.org/) como banco relacional
 - [Uvicorn](https://www.uvicorn.org/) como servidor ASGI
 - [Pydantic](https://docs.pydantic.dev/) para validação de dados
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) para web scrapping
