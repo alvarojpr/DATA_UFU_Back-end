@@ -87,4 +87,4 @@ back_end_pdsi2/
 
 
 SOBRE:
-Projeto acadêmico desenvolvido pelos alunos da Universidade Federal de Uberlândia (UFU) Álvaro José, Edilson Filho, Eduardo Alvim, Gabriel Gama e Waldemar Flores para a disciplina de PDSI. Tem como objetivo centralizar informações relevantes para os estudantes do curso de Sistemas de Informação.
+Projeto acadêmico desenvolvido pelos alunos da Universidade Federal de Uberlândia (UFU) Álvaro José, Gabriel Gama e Waldemar Flores para a disciplina de PDSI. Tem como objetivo centralizar informações relevantes para os estudantes do curso de Sistemas de Informação.
